@@ -35,7 +35,6 @@ def create_dependency_task(agent, cobol_files: dict):
 def create_conversion_task(agent, cobol_files: dict):
     """COBOL'dan Java'ya dönüştürme görevi"""
     
-    # Controller example outside f-string to avoid @ syntax issues
     controller_example = '''
 @RestController
 @RequestMapping("/api/users")
@@ -51,9 +50,28 @@ public class UserController {
 }
 '''
     
+    test_example = '''
+@SpringBootTest
+class MainprogramServiceTest {
+    
+    @Autowired
+    private MainprogramService mainprogramService;
+    
+    @Test
+    void testGetUser() {
+        UserData result = mainprogramService.getUser(1);
+        assertNotNull(result);
+        assertEquals("John", result.getName());
+    }
+}
+'''
+    
+    # Use double braces to escape curly braces in f-string
+    naming_convention = "{ServiceName}Test.java or {ControllerName}Test.java"
+    
     return Task(
         description=f"""
-        Convert these COBOL programs to Java Spring Boot classes.
+        Convert these COBOL programs to Java Spring Boot classes WITH unit tests.
 
         COBOL Files:
         {chr(10).join([f'=== {name} ==={chr(10)}{content}' for name, content in cobol_files.items()])}
@@ -62,6 +80,8 @@ public class UserController {
         - Service classes: com.example.cobol2java.service
         - DTO classes: com.example.cobol2java.dto
         - Controller classes: com.example.cobol2java.controller
+        - Test classes: src/test/java/com/example/cobol2java/service/
+                       src/test/java/com/example/cobol2java/controller/
         
         Rules for Services:
         1. PROGRAM-ID → ClassName (MAINPROGRAM → MainprogramService)
@@ -76,7 +96,6 @@ public class UserController {
         - Place DTO classes in com.example.cobol2java.dto package
         - Use standard Java bean conventions (private fields, getters, setters)
         - Include toString() method for debugging
-        - Include all necessary fields based on COBOL WORKING-STORAGE variables
         
         Rules for Controllers:
         - Create @RestController classes for each main service
@@ -88,15 +107,33 @@ public class UserController {
         - Use @Autowired to inject services
         - Return DTOs or ResponseEntity<DTO>
         
+        Rules for Unit Tests:
+        - Create JUnit 5 test classes for each Service and Controller
+        - Place Service tests in src/test/java/com/example/cobol2java/service/
+        - Place Controller tests in src/test/java/com/example/cobol2java/controller/
+        - Use @SpringBootTest for integration tests
+        - Use @WebMvcTest for controller tests
+        - Use @MockBean to mock dependencies
+        - Use AssertJ or JUnit assertions (assertNotNull, assertEquals, etc.)
+        - Test happy path and edge cases (invalid input, null values)
+        - Name tests: {naming_convention}
+        
+        Test Dependencies (pom.xml):
+        - spring-boot-starter-test (includes JUnit 5, Mockito, AssertJ)
+        
         Output Format:
         For each COBOL program, generate:
         1. Service class in com.example.cobol2java.service
-        2. DTO class(es) in com.example.cobol2java.dto (if data structures are needed)
+        2. DTO class(es) in com.example.cobol2java.dto
         3. Controller class in com.example.cobol2java.controller (for main programs)
+        4. Unit test class(es) in src/test/java/com/example/cobol2java/...
         
         Example Controller:
         {controller_example}
+        
+        Example Test:
+        {test_example}
         """,
-        expected_output="Complete Java code with services, DTOs, and Controllers",
+        expected_output="Complete Java code with services, DTOs, Controllers, and Unit Tests",
         agent=agent
     )
