@@ -3,14 +3,23 @@
 ## Dependency Flow Diagram
 
 ```mermaid
-flowchart TD
-    MAINPROGRAM[MAINPROGRAM] -->|CALL| ADRESS[ADRESS]
+graph TD
+    A[MAINPROGRAM] -->|CALL| B[ADRESS]
 ```
 
 ## Description
 
-- **MAINPROGRAM**: Ana program, kullanıcı ID'sini alır ve ADRESS programını çağırır
-- **ADRESS**: Verilen ID için adres bilgisini döndürür
+| Program | Description |
+|---------|-------------|
+| MAINPROGRAM | Ana program, kullanıcı ID'sini alır ve ADRESS programını çağırır |
+| ADRESS | Verilen ID için adres bilgisini döndürür |
+
+## Call Hierarchy
+
+```
+MAINPROGRAM
+    └── CALL ADRESS
+```
 
 ---
 
