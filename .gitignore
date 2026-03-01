@@ -34,6 +34,9 @@ target/
 *.ear
 .mvn/timing.properties
 
+# Java Project (generated output)
+java_project/
+
 # OS
 .DS_Store
 Thumbs.db
