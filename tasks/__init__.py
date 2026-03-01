@@ -32,6 +32,41 @@ def create_dependency_task(agent, cobol_files: dict):
     )
 
 
+def create_mermaid_task(agent, dependency_map: dict):
+    """Mermaid flow diyagramı oluşturma görevi"""
+    return Task(
+        description=f"""
+        Create a Mermaid flow diagram showing the COBOL program dependencies.
+        
+        Dependency Map:
+        {dependency_map}
+        
+        Rules:
+        1. Use Mermaid flowchart syntax (flowchart TD)
+        2. Each program is a node (e.g., A[MAINPROGRAM])
+        3. CALL relationships are arrows (e.g., A --> B)
+        4. Add descriptive labels to arrows showing "CALL"
+        5. Use proper Mermaid syntax with subgraphs if needed
+        
+        Example Output Format:
+        ```mermaid
+        flowchart TD
+            A[MAINPROGRAM] -->|CALL| B[ADRESS]
+            B -->|CALL| C[UTILS]
+        ```
+        
+        Create a complete Mermaid diagram file that can be rendered in:
+        - GitHub Markdown
+        - Mermaid Live Editor
+        - Documentation tools
+        
+        Save the diagram as: dependency-diagram.md
+        """,
+        expected_output="Mermaid flowchart code in a markdown file",
+        agent=agent
+    )
+
+
 def create_conversion_task(agent, cobol_files: dict):
     """COBOL'dan Java'ya dönüştürme görevi"""
     
@@ -66,7 +101,6 @@ class MainprogramServiceTest {
 }
 '''
     
-    # Use double braces to escape curly braces in f-string
     naming_convention = "{ServiceName}Test.java or {ControllerName}Test.java"
     
     return Task(

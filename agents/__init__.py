@@ -23,6 +23,18 @@ def create_dependency_analyst():
     )
 
 
+def create_mermaid_creator():
+    """Mermaid flow diyagramı oluşturan agent"""
+    return Agent(
+        role="Technical Diagram Creator",
+        goal="Create Mermaid flow diagrams showing program dependencies",
+        backstory="""You are an expert in creating technical diagrams using Mermaid syntax.
+        You specialize in visualizing program call hierarchies and dependencies.
+        Your diagrams are clear, well-structured, and render perfectly in GitHub Markdown.""",
+        verbose=True
+    )
+
+
 def create_java_converter():
     """COBOL'dan Java'ya dönüştüren agent"""
     return Agent(
