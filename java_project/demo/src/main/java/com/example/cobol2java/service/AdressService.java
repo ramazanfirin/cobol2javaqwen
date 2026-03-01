@@ -1,42 +1,32 @@
 package com.example.cobol2java.service;
 
-import com.example.cobol2java.dto.AddressData;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AdressService {
 
-    public AddressData getAddress(int userId) {
-        System.out.println("  [ADRESS Program] Called with ID: " + userId);
-        
-        System.out.println("  [ADRESS Program] SQL: SELECT address FROM users WHERE id = " + userId);
-        
-        AddressData addressData = simulateSqlAddress(userId);
-        
-        System.out.println("  [ADRESS Program] Address found: " + addressData.getAddress());
-        
-        return addressData;
+    public String getAddress(int id) {
+        System.out.println("[ADRESS Program] Called with ID: " + id);
+
+        System.out.println("[ADRESS Program] SQL: SELECT address FROM users WHERE id = " + id);
+        String address = simulateSQLAddress(id);
+
+        System.out.println("[ADRESS Program] Address found: " + address);
+        System.out.println("[ADRESS Program] Returning to caller...");
+
+        return address;
     }
-    
-    private AddressData simulateSqlAddress(int userId) {
-        AddressData addressData = new AddressData();
-        addressData.setUserId(userId);
-        
-        switch (userId) {
+
+    private String simulateSQLAddress(int id) {
+        switch (id) {
             case 1:
-                addressData.setAddress("123 Main Street, New York, NY 10001");
-                break;
+                return "123 Main Street, New York, NY 10001";
             case 2:
-                addressData.setAddress("456 Oak Avenue, London, UK SW1A 1AA");
-                break;
+                return "456 Oak Avenue, London, UK SW1A 1AA";
             case 3:
-                addressData.setAddress("789 Istiklal Cad, Istanbul, Turkey 34433");
-                break;
+                return "789 Istiklal Cad, Istanbul, Turkey 34433";
             default:
-                addressData.setAddress("Unknown Address, City, Country");
-                break;
+                return "Unknown Address, City, Country";
         }
-        
-        return addressData;
     }
 }

@@ -34,9 +34,26 @@ def create_dependency_task(agent, cobol_files: dict):
 
 def create_conversion_task(agent, cobol_files: dict):
     """COBOL'dan Java'ya dönüştürme görevi"""
+    
+    # Controller example outside f-string to avoid @ syntax issues
+    controller_example = '''
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    
+    @Autowired
+    private MainprogramService mainprogramService;
+    
+    @GetMapping("/{id}")
+    public UserData getUser(@PathVariable int id) {
+        return mainprogramService.getUser(id);
+    }
+}
+'''
+    
     return Task(
         description=f"""
-        Convert these COBOL programs to Java @Service classes.
+        Convert these COBOL programs to Java Spring Boot classes.
 
         COBOL Files:
         {chr(10).join([f'=== {name} ==={chr(10)}{content}' for name, content in cobol_files.items()])}
@@ -44,35 +61,42 @@ def create_conversion_task(agent, cobol_files: dict):
         Package Structure:
         - Service classes: com.example.cobol2java.service
         - DTO classes: com.example.cobol2java.dto
+        - Controller classes: com.example.cobol2java.controller
         
-        Rules:
-        1. PROGRAM-ID → ClassName (HELLO → HelloService)
+        Rules for Services:
+        1. PROGRAM-ID → ClassName (MAINPROGRAM → MainprogramService)
         2. Add @Service annotation
         3. CALL 'PROG' → @Autowired ProgService progService
         4. DISPLAY → System.out.println
-        5. PROCEDURE DIVISION → public method (e.g., execute() or getUser())
+        5. PROCEDURE DIVISION → public method (e.g., getUser(), getAdress())
+        6. Methods should return DTOs when data is being returned
         
-        DTO Rules:
+        Rules for DTOs:
         - Create DTO classes for data structures (e.g., UserData, AddressData)
-        - Place DTO classes in com.example.cobol2java.dto package (NOT as subpackage)
+        - Place DTO classes in com.example.cobol2java.dto package
         - Use standard Java bean conventions (private fields, getters, setters)
         - Include toString() method for debugging
         - Include all necessary fields based on COBOL WORKING-STORAGE variables
         
-        Service Rules:
-        - Place Service classes in com.example.cobol2java.service package
-        - Use @Autowired for service dependencies (from CALL statements)
-        - Methods should return DTOs when data is being returned
+        Rules for Controllers:
+        - Create @RestController classes for each main service
+        - Place Controller classes in com.example.cobol2java.controller package
+        - Use @RestController annotation
+        - Use @RequestMapping for base path (e.g., "/api/users")
+        - Use @GetMapping, @PostMapping for HTTP methods
+        - Use @PathVariable for URL parameters
+        - Use @Autowired to inject services
+        - Return DTOs or ResponseEntity<DTO>
         
         Output Format:
         For each COBOL program, generate:
         1. Service class in com.example.cobol2java.service
         2. DTO class(es) in com.example.cobol2java.dto (if data structures are needed)
+        3. Controller class in com.example.cobol2java.controller (for main programs)
         
-        Important: dto is a SIBLING package, not a child of service!
-        - com.example.cobol2java.service (for @Service classes)
-        - com.example.cobol2java.dto (for DTO classes)
+        Example Controller:
+        {controller_example}
         """,
-        expected_output="Complete Java code with service in com.example.cobol2java.service and DTOs in com.example.cobol2java.dto",
+        expected_output="Complete Java code with services, DTOs, and Controllers",
         agent=agent
     )

@@ -1,17 +1,17 @@
 package com.example.cobol2java.dto;
 
 public class UserData {
-    private int userId;
+    private int id;
     private String name;
     private String surname;
     private String address;
 
-    public int getUserId() {
-        return userId;
+    public int getId() {
+        return id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -41,7 +41,7 @@ public class UserData {
     @Override
     public String toString() {
         return "UserData{" +
-                "userId=" + userId +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", address='" + address + '\'' +
