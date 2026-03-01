@@ -1,15 +1,16 @@
 from crewai import Agent
-from config.llm import get_openai_api_key
+
 
 def create_cobol_analyst():
     """COBOL dosyalarını analiz eden agent"""
     return Agent(
         role="COBOL Code Analyst",
-        goal="Analyze COBOL source files and extract program structure",
+        goal="Analyze COBOL source files and extract PROGRAM-ID from each file",
         backstory="""You are a senior COBOL developer with 20+ years of experience.
         You understand PROGRAM-ID, PROCEDURE DIVISION, CALL statements.""",
         verbose=True
     )
+
 
 def create_dependency_analyst():
     """CALL bağımlılıklarını analiz eden agent"""
@@ -20,6 +21,7 @@ def create_dependency_analyst():
         You identify CALL 'PROGRAM-NAME' patterns and build dependency graphs.""",
         verbose=True
     )
+
 
 def create_java_converter():
     """COBOL'dan Java'ya dönüştüren agent"""
